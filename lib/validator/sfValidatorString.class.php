@@ -43,8 +43,6 @@ class sfValidatorString extends sfValidatorBase
 
     $this->addOption('max_length');
     $this->addOption('min_length');
-
-    $this->setOption('empty_value', '');
   }
 
   /**
@@ -52,18 +50,28 @@ class sfValidatorString extends sfValidatorBase
    */
   protected function doClean($value)
   {
-    $clean = (string) $value;
-
-    $length = function_exists('mb_strlen') ? mb_strlen($clean, $this->getCharset()) : strlen($clean);
-
-    if ($this->hasOption('max_length') && $length > $this->getOption('max_length'))
+    if ($value === null)
     {
-      throw new sfValidatorError($this, 'max_length', array('value' => $value, 'max_length' => $this->getOption('max_length')));
+      if ($this->hasOption('min_length') && $this->getOption('min_length') > 0)
+      {
+        throw new sfValidatorError($this, 'min_length', array('value' => $value, 'min_length' => $this->getOption('min_length')));
+      }
     }
-
-    if ($this->hasOption('min_length') && $length < $this->getOption('min_length'))
+    else
     {
-      throw new sfValidatorError($this, 'min_length', array('value' => $value, 'min_length' => $this->getOption('min_length')));
+      $clean = (string) $value;
+
+      $length = function_exists('mb_strlen') ? mb_strlen($clean, $this->getCharset()) : strlen($clean);
+
+      if ($this->hasOption('max_length') && $length > $this->getOption('max_length'))
+      {
+        throw new sfValidatorError($this, 'max_length', array('value' => $value, 'max_length' => $this->getOption('max_length')));
+      }
+
+      if ($this->hasOption('min_length') && $length < $this->getOption('min_length'))
+      {
+        throw new sfValidatorError($this, 'min_length', array('value' => $value, 'min_length' => $this->getOption('min_length')));
+      }
     }
 
     return $clean;
