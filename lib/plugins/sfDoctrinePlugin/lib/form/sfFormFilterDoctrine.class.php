@@ -231,7 +231,7 @@ abstract class sfFormFilterDoctrine extends sfFormFilter
     }
     else if (is_array($values) && isset($values['text']) && '' != $values['text'])
     {
-      $query->addWhere(sprintf('%s.%s LIKE ?', $query->getRootAlias(), $fieldName), '%'.$values['text'].'%');
+      $query->addWhere(sprintf('%s.%s ILIKE ?', $query->getRootAlias(), $fieldName), '%'.$values['text'].'%');
     }
   }
 
